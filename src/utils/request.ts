@@ -3,7 +3,7 @@ import axios, { type Method } from 'axios'
 import { showToast } from 'vant'
 import router from '@/router'
 import { useStore } from '../stores/counter'
-import { routerKey } from 'vue-router'
+// import { routerKey } from 'vue-router'
 const instance = axios.create({
   baseURL: '/dev-api',
   timeout: 5000
@@ -27,7 +27,7 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   (res: AxiosResponse) => {
-    if (res.data.code !== 1000) {
+    if (res.data.code !== 10000) {
       showToast(res.data.message)
 
       // 把错误的业务码返回出去
@@ -41,14 +41,19 @@ instance.interceptors.response.use(
     if (err.response.status == 401) {
       const store = useStore()
       store.delUser()
-      router.push(`/login?${router.currentRoute.value.fullPath}`)
+      router.push(`/login?returnUrl=${router.currentRoute.value.fullPath}`)
     }
     return Promise.reject(err)
   }
 )
 
-const request = (url: string, method: Method, submitData: object) => {
-  return instance({
+type Data<T> = {
+  code: number
+  message: string
+  data: T
+}
+const request = <T>(url: string, method: Method, submitData: object) => {
+  return instance.request<T, Data<T>>({
     url,
     method,
     [method.toLowerCase() === 'get' ? 'params' : 'data']: submitData

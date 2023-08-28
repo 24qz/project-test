@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-type User =
+export type User =
   | undefined
   | {
       token: string
@@ -13,14 +13,8 @@ type User =
 export const useStore = defineStore(
   'counter',
   () => {
-    const Info = ref<User>({
-      token: '121212',
-      id: '2222',
-      account: '好嘞',
-      mobile: '212121',
-      avatar: 'https'
-    })
-    const num = ref<number>(0)
+    const Info = ref<User>()
+    const bb = '回来'
 
     const setUser = (u: User) => {
       Info.value = u
@@ -30,11 +24,7 @@ export const useStore = defineStore(
       Info.value = undefined
     }
 
-    const add = () => {
-      num.value++
-    }
-
-    return { Info, setUser, delUser, num, add }
+    return { Info, setUser, delUser, bb }
   },
   {
     persist: true
